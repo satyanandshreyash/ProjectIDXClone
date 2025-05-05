@@ -1,15 +1,13 @@
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import usePing from "./hooks/apis/queries/usePing";
+import CreateProject from "./pages/CreateProject";
 
 function App() {
-  const { isLoading, data } = usePing();
-  // useEffect(() => {
-  //   pingAPI();
-  // }, []);
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  return <>Hello {data.message}!</>;
+  return (
+    <Routes>
+      <Route path="/" element={<CreateProject />} />
+    </Routes>
+  );
 }
 
 export default App;
