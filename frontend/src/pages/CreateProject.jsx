@@ -1,14 +1,17 @@
 import React from "react";
 import { Button } from "antd";
 import { useCreateProject } from "../hooks/apis/mutations/useCreateProject";
+import { useNavigate } from "react-router-dom";
 
 const CreateProject = () => {
+  const navigate = useNavigate();
   const { createProjectMutation, isPending, isSuccess, error } =
     useCreateProject();
   const handleCreateProject = async () => {
     try {
-      await createProjectMutation();
+      const response = await createProjectMutation();
       console.log("Now we should redirect to the project page");
+      navigate(`/project/${response.projectId}`);
     } catch (error) {
       console.error("Error creating project:", error);
     }
