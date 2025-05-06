@@ -1,20 +1,24 @@
-import util from 'util';
-import child_process from 'child_process';
-import uuid4 from 'uuid4';
-import fs from 'fs/promises';
-import { REACT_PROJECT_COMMAND } from '../config/serverConfig.js';
+import { createProjectService, getProjectTreeService } from "../service/projectService.js";
 
-const execPromisified = util.promisify(child_process.exec);
 
 export const createProjectController = async (req, res) => {
-    const projectId = uuid4();
-    console.log('Creating project with ID:', projectId);
 
-    await fs.mkdir(`./projects/${projectId}`);
-
-    const response = await execPromisified(REACT_PROJECT_COMMAND, {
-        cwd: `./projects/${projectId}`
-    })
+    const projectId = await createProjectService();
+    if (!projectId) {
+        return res.status(500).json({ message: 'Failed to create project' });
+    }
 
     res.status(200).json({ message: 'Project created', projectId });
-} 
+}
+
+export const getProjectTreeController = async (req, res) => {
+    const tree = await getProjectTreeService(req.params.projectId);
+    if (!tree) {
+        return res.status(500).json({ message: 'Failed to get project tree' });
+    }
+    res.status(200).json({
+        data: tree,
+        success: true,
+        message: 'Project tree fetched successfully'
+    })
+}
