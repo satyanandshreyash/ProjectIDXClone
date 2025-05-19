@@ -10,3 +10,13 @@ export const createProjectAPI = async () => {
         throw error;
     }
 }
+
+export const getProjectTree = async ({ projectId }) => {
+    try {
+        const response = await axiosInstance.get(`/api/v1/projects/${projectId}/tree`);
+        return response?.data?.data;
+    } catch (error) {
+        console.log("Error in getProjectTree:", error?.response?.data || error.message);
+        throw error;
+    }
+}
