@@ -4,13 +4,27 @@ import TextEditor from "../components/molecules/TextEditor";
 import TabButton from "../components/atoms/TabButton";
 import TreeStructure from "../components/organisms/TreeStructure/TreeStructure";
 import { useTreeStructureStore } from "../store/treeStructureStore";
+import { useEditorSocketStore } from "../store/editorSocketStore";
+import { io } from "socket.io-client";
 
 const ProjectPlayground = () => {
   const { projectId } = useParams();
   const { setProjectId } = useTreeStructureStore();
+  const { setEditorSocket } = useEditorSocketStore();
   useEffect(() => {
-    setProjectId(projectId);
-  }, [projectId, setProjectId]);
+    if (projectId) {
+      setProjectId(projectId);
+      const editorSocketConnection = io(
+        `${import.meta.env.VITE_BACKEND_URL}/editor`,
+        {
+          query: {
+            projectId: projectId,
+          },
+        }
+      );
+      setEditorSocket(editorSocketConnection);
+    }
+  }, [projectId, setProjectId, setEditorSocket]);
   return (
     <div className="bg-[#181818] text-gray-300 min-h-screen w-screen">
       <h1>Project Playground</h1>
