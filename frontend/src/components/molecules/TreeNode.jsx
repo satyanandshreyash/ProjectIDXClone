@@ -5,10 +5,14 @@ import { FcOpenedFolder } from "react-icons/fc";
 import FileIcon from "../atoms/FileIcon";
 import { getFileExtension } from "../../utils/getFileExtension";
 import { useEditorSocketStore } from "../../store/editorSocketStore";
+import { useFileContextMenuStore } from "../../store/fileContextMenuStore";
 
 const TreeNode = ({ fileFolderData }) => {
   const [visibility, setVisibility] = useState({});
   const { editorSocket } = useEditorSocketStore();
+
+  const { setFile, setIsOpen, setX, setY } = useFileContextMenuStore();
+
   function toggleVisibility(name) {
     setVisibility({
       ...visibility,
@@ -16,9 +20,18 @@ const TreeNode = ({ fileFolderData }) => {
     });
   }
   const handleDoubleClick = (fileFolderData) => {
-    console.log("Double clicked on: ", fileFolderData);
+    // console.log("Double clicked on: ", fileFolderData);
     editorSocket.emit("readFile", { path: fileFolderData.path });
   };
+
+  const handleContextMenuForFile = (e, path) => {
+    e.preventDefault();
+    setFile(path);
+    setIsOpen(true);
+    setX(e.clientX);
+    setY(e.clientY);
+  };
+
   return (
     fileFolderData && (
       <div className="ml-3 border-gray-400">
@@ -43,6 +56,9 @@ const TreeNode = ({ fileFolderData }) => {
         ) : (
           <button
             className="ml-5 flex items-center gap-2 cursor-pointer outline-none hover:bg-gray-600 px-2 w-full"
+            onContextMenu={(e) =>
+              handleContextMenuForFile(e, fileFolderData.path)
+            }
             onDoubleClick={() => {
               handleDoubleClick(fileFolderData);
             }}

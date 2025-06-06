@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Editor from "@monaco-editor/react";
-import { useEditorSocketStore } from "../../store/editorSocketStore";
 import { useActiveFileTabStore } from "../../store/activeFileTabStore";
+import { useEditorSocketStore } from "../../store/editorSocketStore";
+import { extensionToFileType } from "../../utils/extensionToFileType";
 
 const TextEditor = () => {
+  let timerId = null;
   const [editorState, setEditorState] = useState({
     theme: null,
   });
+  const { activeFileTab } = useActiveFileTabStore();
   const { editorSocket } = useEditorSocketStore();
-  const { activeFileTab, setActiveFileTab } = useActiveFileTabStore();
   const fetchThemeData = async () => {
     const response = await fetch("/GitHubDark.json");
     const data = await response.json();
@@ -23,21 +25,29 @@ const TextEditor = () => {
     monaco.editor.setTheme("GitHubDark");
   };
 
-  editorSocket?.on("readFileSuccess", (data) => {
-    console.log("File read successfully:", data);
-    setActiveFileTab(data.path, data.data);
-  });
+  const handleChange = (value) => {
+    if (timerId !== null) {
+      clearTimeout(timerId);
+    }
+    timerId = setTimeout(() => {
+      editorSocket?.emit("writeFile", {
+        data: value,
+        path: activeFileTab?.path,
+      });
+    }, 2000);
+  };
 
   useEffect(() => {
     fetchThemeData();
   }, []);
+
   return (
     <>
       {editorState.theme && (
         <Editor
-          height={"80vh"}
+          height={"90vh"}
           width={"100%"}
-          language=""
+          language={extensionToFileType(activeFileTab?.extension)}
           defaultValue="//Code Here"
           options={{
             fontSize: 18,
@@ -49,6 +59,7 @@ const TextEditor = () => {
           value={activeFileTab?.value || " //Code Here"}
           theme="vs-dark"
           onMount={handleEditorTheme}
+          onChange={handleChange}
         />
       )}
     </>

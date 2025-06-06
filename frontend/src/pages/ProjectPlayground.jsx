@@ -29,7 +29,7 @@ const ProjectPlayground = () => {
     <div className="bg-[#181818] text-gray-300 min-h-screen w-screen">
       <h1>Project Playground</h1>
       <p>Project ID: {projectId}</p>
-      <div className="flex">
+      <div className="flex h-full">
         <TreeStructure />
         <div className="flex-1">
           <TabButton />
