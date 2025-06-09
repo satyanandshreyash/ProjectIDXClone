@@ -6,12 +6,15 @@ import FileIcon from "../atoms/FileIcon";
 import { getFileExtension } from "../../utils/getFileExtension";
 import { useEditorSocketStore } from "../../store/editorSocketStore";
 import { useFileContextMenuStore } from "../../store/fileContextMenuStore";
+import { useFolderContextMenuStore } from "../../store/folderContextMenuStore";
 
 const TreeNode = ({ fileFolderData }) => {
   const [visibility, setVisibility] = useState({});
   const { editorSocket } = useEditorSocketStore();
 
   const { setFile, setIsOpen, setX, setY } = useFileContextMenuStore();
+  const { setFolder, setFolderIsOpen, setFolderX, setFolderY } =
+    useFolderContextMenuStore();
 
   function toggleVisibility(name) {
     setVisibility({
@@ -22,6 +25,14 @@ const TreeNode = ({ fileFolderData }) => {
   const handleDoubleClick = (fileFolderData) => {
     // console.log("Double clicked on: ", fileFolderData);
     editorSocket.emit("readFile", { path: fileFolderData.path });
+  };
+
+  const handleContextMenuForFolder = (e, path) => {
+    e.preventDefault();
+    setFolder(path);
+    setFolderIsOpen(true);
+    setFolderX(e.clientX);
+    setFolderY(e.clientY);
   };
 
   const handleContextMenuForFile = (e, path) => {
@@ -39,6 +50,9 @@ const TreeNode = ({ fileFolderData }) => {
           <button
             className="flex items-center gap-1 cursor-pointer outline-none hover:bg-gray-600 px-2 w-full"
             onClick={() => toggleVisibility(fileFolderData.name)}
+            onContextMenu={(e) =>
+              handleContextMenuForFolder(e, fileFolderData.path)
+            }
           >
             {visibility[fileFolderData.name] ? (
               <div className="flex items-center">

@@ -1,4 +1,5 @@
 import fs from 'fs/promises';
+import pathModule from 'path';
 
 export const handleEditorSocketEvents = (socket, editorNamespace) => {
     socket.on('writeFile', async ({ data, path }) => {
@@ -17,16 +18,35 @@ export const handleEditorSocketEvents = (socket, editorNamespace) => {
     });
 
     socket.on('createFile', async ({ path }) => {
-        const isFileExists = await fs.stat(path);
-        if (isFileExists) {
-            socket.emit('createFileError', {
+        try {
+            // 1. Try checking if file exists
+            await fs.stat(path);
+
+            // If it didn't throw, file exists
+            socket.emit("createFileError", {
                 error: "File already exists",
             });
             return;
+        } catch (err) {
+            if (err.code !== "ENOENT") {
+                // Unexpected error (e.g. permission denied)
+                console.log("Stat error:", err);
+                socket.emit("createFileError", {
+                    error: "Unexpected error while checking file",
+                });
+                return;
+            }
+            // ENOENT means file does not exist — good to proceed
         }
         try {
-            const response = await fs.writeFile(path, "");
-            socket.emit('createFileSuccess', {
+            // 2. Ensure parent directory exists
+            const dirPath = pathModule.dirname(path);
+            await fs.mkdir(dirPath, { recursive: true });
+
+            // 3. Create empty file
+            await fs.writeFile(path, "");
+
+            socket.emit("createFileSuccess", {
                 data: "File created successfully",
             });
         } catch (error) {

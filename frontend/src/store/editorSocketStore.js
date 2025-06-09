@@ -27,7 +27,24 @@ export const useEditorSocketStore = create((set) => ({
             const projectId = useTreeStructureStore.getState().projectId;
             const updatedTreeStructure = await getProjectTree({ projectId });
             projectTreeStructureSetter(updatedTreeStructure);
+        });
 
+        socket?.on("createFileSuccess", async () => {
+            const projectId = useTreeStructureStore.getState().projectId;
+            const updatedTreeStructure = await getProjectTree({ projectId });
+            projectTreeStructureSetter(updatedTreeStructure);
+        })
+
+        socket?.on("createFolderSuccess", async () => {
+            const projectId = useTreeStructureStore.getState().projectId;
+            const updatedTreeStructure = await getProjectTree({ projectId });
+            projectTreeStructureSetter(updatedTreeStructure);
+        })
+
+        socket?.on("deleteFolderSuccess", async () => {
+            const projectId = useTreeStructureStore.getState().projectId;
+            const updatedTreeStructure = await getProjectTree({ projectId });
+            projectTreeStructureSetter(updatedTreeStructure);
         });
 
         set({ editorSocket: socket });

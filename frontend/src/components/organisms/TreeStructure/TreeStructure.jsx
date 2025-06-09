@@ -6,11 +6,20 @@ import TreeNode from "../../molecules/TreeNode";
 import { useState } from "react";
 import { useFileContextMenuStore } from "../../../store/fileContextMenuStore";
 import FileContextMenu from "../../molecules/FileContextMenu";
+import { useFolderContextMenuStore } from "../../../store/folderContextMenuStore";
+import FolderContextMenu from "../../molecules/FolderContextMenu";
 
 const TreeStructure = () => {
   const { projectId } = useParams();
   const { isLoading, isError } = useProjectTree(projectId);
   const { treeStructure } = useTreeStructureStore();
+
+  const {
+    folderIsOpen: isFolderContextMenuOpen,
+    folderX: FolderContextMenuX,
+    folderY: FolderContextMenuY,
+    folder,
+  } = useFolderContextMenuStore();
 
   const {
     x: FileContextMenuX,
@@ -24,6 +33,13 @@ const TreeStructure = () => {
   return (
     <div className="border-r-1 border-gray-400">
       <h1 className="font-bold text-lg ml-3">Explorer</h1>
+      {isFolderContextMenuOpen && FolderContextMenuX && FolderContextMenuY && (
+        <FolderContextMenu
+          x={FolderContextMenuX}
+          y={FolderContextMenuY}
+          path={folder}
+        />
+      )}
       {isFileContextMenuOpen && FileContextMenuX && FileContextMenuY && (
         <FileContextMenu
           x={FileContextMenuX}
