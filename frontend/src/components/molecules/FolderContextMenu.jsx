@@ -1,19 +1,35 @@
 import React from "react";
 import { useFolderContextMenuStore } from "../../store/folderContextMenuStore";
 import { useEditorSocketStore } from "../../store/editorSocketStore";
+import { useModalStore } from "../../store/modalStore";
 
 const FolderContextMenu = ({ x, y, path }) => {
   const { setFolderIsOpen } = useFolderContextMenuStore();
   const { editorSocket } = useEditorSocketStore();
+  const {
+    setIsModalOpen,
+    setModalHeading,
+    setModalPlaceholder,
+    setModalPurpose,
+    setModalTargetPath,
+  } = useModalStore();
 
   const handleCreateNewFile = (e) => {
     e.preventDefault();
-    editorSocket.emit("createFile", { path: path + "/" + "newFile.js" });
+    setModalHeading("Create File");
+    setModalPlaceholder("Enter File Name");
+    setModalPurpose("createFile");
+    setModalTargetPath(path);
+    setIsModalOpen(true);
   };
 
   const handleCreateNewFolder = (e) => {
     e.preventDefault();
-    editorSocket.emit("createFolder", { path: path + "/" + "newFolder" });
+    setModalHeading("Create Folder");
+    setModalPlaceholder("Enter Folder Name");
+    setModalPurpose("createFolder");
+    setModalTargetPath(path);
+    setIsModalOpen(true);
   };
 
   const handleDeleteFolder = (e) => {
