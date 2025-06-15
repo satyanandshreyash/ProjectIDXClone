@@ -9,6 +9,7 @@ import { io } from "socket.io-client";
 import { useModalStore } from "../store/modalStore";
 import Modal from "react-modal";
 import { useActiveFileTabStore } from "../store/activeFileTabStore";
+import BrowserTerminal from "../components/molecules/BrowserTerminal";
 
 const ProjectPlayground = () => {
   const { projectId } = useParams();
@@ -88,6 +89,7 @@ const ProjectPlayground = () => {
           {activeFileTab && <TextEditor />}
         </div>
       </div>
+      <BrowserTerminal />
     </div>
   );
 };

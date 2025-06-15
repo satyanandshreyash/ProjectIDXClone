@@ -31,7 +31,7 @@ const TreeStructure = () => {
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching tree</div>;
   return (
-    <div className="border-r-1 border-gray-400 h-screen">
+    <div className="border-r border-gray-600 h-[85vh]">
       <h1 className="font-bold text-lg ml-3">Explorer</h1>
       {isFolderContextMenuOpen && FolderContextMenuX && FolderContextMenuY && (
         <FolderContextMenu

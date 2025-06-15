@@ -45,7 +45,7 @@ const TextEditor = () => {
     <>
       {editorState.theme && (
         <Editor
-          height={"90vh"}
+          height={"80vh"}
           width={"100%"}
           language={extensionToFileType(activeFileTab?.extension)}
           defaultValue="//Code Here"
