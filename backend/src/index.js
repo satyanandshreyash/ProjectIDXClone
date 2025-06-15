@@ -46,6 +46,24 @@ editorNamespace.on('connection', (socket) => {
     handleEditorSocketEvents(socket, editorNamespace);
 })
 
+const terminalNamespace = io.of('/terminal');
+terminalNamespace.on('connection', (socket) => {
+    console.log('terminal connected');
+
+    const projectId = socket.handshake.query.projectId;
+
+    socket.on('shell-input', (data) => {
+        console.log('input received', data);
+        terminalNamespace.emit('shell-output', data);
+    })
+
+    socket.on('disconnect', () => {
+        console.log('terminal disconnected');
+    })
+
+
+})
+
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 })
