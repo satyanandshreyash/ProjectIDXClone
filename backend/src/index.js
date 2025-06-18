@@ -7,6 +7,7 @@ import chokidar from 'chokidar';
 import apiRouter from './routes/index.js';
 import { PORT } from "./config/serverConfig.js";
 import { handleEditorSocketEvents } from './socketHandlers/editorHandler.js';
+import { handleContainerCreate } from './containers/handleContainerCreate.js';
 
 const app = express();
 const server = createServer(app);
@@ -52,16 +53,16 @@ terminalNamespace.on('connection', (socket) => {
 
     const projectId = socket.handshake.query.projectId;
 
-    socket.on('shell-input', (data) => {
-        console.log('input received', data);
-        terminalNamespace.emit('shell-output', data);
-    })
+    // socket.on('shell-input', (data) => {
+    //     console.log('input received', data);
+    //     terminalNamespace.emit('shell-output', data);
+    // })
 
     socket.on('disconnect', () => {
         console.log('terminal disconnected');
     })
 
-
+    handleContainerCreate(projectId, socket);
 })
 
 server.listen(PORT, () => {
