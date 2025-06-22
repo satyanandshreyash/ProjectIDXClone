@@ -13,7 +13,7 @@ RUN apt update && apt upgrade -y
 RUN apt install nano curl -y
 
 # Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - && apt-get install -y nodejs
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && apt-get install -y nodejs
 
 # configure terminal to display current working directory
 RUN echo "PS1='\w'" >> /home/sandbox/.bashrc

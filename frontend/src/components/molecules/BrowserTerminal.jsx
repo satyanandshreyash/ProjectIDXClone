@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from "react";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
-import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
+import { AttachAddon } from "@xterm/addon-attach";
 
 const BrowserTerminal = () => {
   const terminalRef = useRef(null);
@@ -15,7 +15,8 @@ const BrowserTerminal = () => {
     const term = new Terminal({
       cursorBlink: true,
       fontSize: 14,
-      fontFamily: "Ubuntu Mono",
+      fontFamily: "Fira Code",
+      convertEol: true,
       theme: {
         background: "#181818",
         foreground: "#d4d4d4",
@@ -25,7 +26,6 @@ const BrowserTerminal = () => {
         green: "#00ff00",
         yellow: "#ffff00",
         cyan: "#00ffff",
-        convertEol: true,
         cursorStyle: "block",
       },
     });
@@ -33,20 +33,14 @@ const BrowserTerminal = () => {
     let fitAddon = new FitAddon();
     term.loadAddon(fitAddon);
     fitAddon.fit();
-    socket.current = io(`${import.meta.env.VITE_BACKEND_URL}/terminal`, {
-      query: {
-        projectId: projectIdFromUrl,
-      },
-    });
 
-    socket.current.on("shell-output", (data) => {
-      term.write(data);
-    });
+    const ws = new WebSocket("/terminal?projectId=" + projectIdFromUrl);
 
-    term.onData((data) => {
-      console.log(data);
-      socket.current.emit("shell-input", data);
-    });
+    ws.onopen = () => {
+      const attachAddon = new AttachAddon(ws);
+      term.loadAddon(attachAddon);
+      socket.current = ws;
+    };
 
     return () => {
       term.dispose();
