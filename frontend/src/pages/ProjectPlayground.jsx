@@ -10,11 +10,13 @@ import { useModalStore } from "../store/modalStore";
 import Modal from "react-modal";
 import { useActiveFileTabStore } from "../store/activeFileTabStore";
 import BrowserTerminal from "../components/molecules/BrowserTerminal";
+import { useTerminalSocketStore } from "../store/terminalSocketStore";
 
 const ProjectPlayground = () => {
   const { projectId } = useParams();
   const { setProjectId } = useTreeStructureStore();
   const { editorSocket, setEditorSocket } = useEditorSocketStore();
+  const { setTerminalSocket } = useTerminalSocketStore();
   const { activeFileTab } = useActiveFileTabStore();
 
   const {
@@ -40,7 +42,11 @@ const ProjectPlayground = () => {
       );
       setEditorSocket(editorSocketConnection);
     }
-  }, [projectId, setProjectId, setEditorSocket]);
+
+    const ws = new WebSocket("/terminal?projectId=" + projectId);
+
+    setTerminalSocket(ws);
+  }, [projectId, setProjectId, setEditorSocket, setTerminalSocket]);
 
   const handleFileFolderCreation = (e) => {
     e.preventDefault();
@@ -54,6 +60,10 @@ const ProjectPlayground = () => {
       });
     }
     setIsModalOpen(false);
+  };
+
+  const fetchPorts = () => {
+    editorSocket.emit("getPort");
   };
 
   return (
@@ -88,6 +98,15 @@ const ProjectPlayground = () => {
           <TabButton />
           {activeFileTab && <TextEditor />}
         </div>
+      </div>
+      <div>
+        <button
+          onClick={() => {
+            fetchPorts();
+          }}
+        >
+          Get Ports
+        </button>
       </div>
       <BrowserTerminal />
     </div>

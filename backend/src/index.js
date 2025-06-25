@@ -7,7 +7,7 @@ import chokidar from 'chokidar';
 import apiRouter from './routes/index.js';
 import { PORT } from "./config/serverConfig.js";
 import { handleEditorSocketEvents } from './socketHandlers/editorHandler.js';
-import { handleContainerCreate } from './containers/handleContainerCreate.js';
+import { handleContainerCreate, listContainerPorts } from './containers/handleContainerCreate.js';
 import { WebSocketServer } from 'ws';
 import { handleTerminalCreation } from './containers/handleTerminalCreation.js';
 
@@ -46,6 +46,12 @@ editorNamespace.on('connection', (socket) => {
             console.log(event, path);
         });
     }
+
+    socket.on('getPort', () => {
+        console.log("getPort request recieved");
+        listContainerPorts();
+    })
+
     handleEditorSocketEvents(socket, editorNamespace);
 });
 

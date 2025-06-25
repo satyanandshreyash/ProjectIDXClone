@@ -2,16 +2,15 @@ import React, { useEffect, useRef } from "react";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
-import { useParams } from "react-router-dom";
 import { AttachAddon } from "@xterm/addon-attach";
+import { useTerminalSocketStore } from "../../store/terminalSocketStore";
 
 const BrowserTerminal = () => {
   const terminalRef = useRef(null);
-  const socket = useRef(null);
-
-  const { projectId: projectIdFromUrl } = useParams();
+  const { terminalSocket } = useTerminalSocketStore();
 
   useEffect(() => {
+    if (!terminalSocket) return;
     const term = new Terminal({
       cursorBlink: true,
       fontSize: 14,
@@ -34,19 +33,23 @@ const BrowserTerminal = () => {
     term.loadAddon(fitAddon);
     fitAddon.fit();
 
-    const ws = new WebSocket("/terminal?projectId=" + projectIdFromUrl);
-
-    ws.onopen = () => {
-      const attachAddon = new AttachAddon(ws);
+    const attachSocket = () => {
+      const attachAddon = new AttachAddon(terminalSocket);
       term.loadAddon(attachAddon);
-      socket.current = ws;
     };
 
+    if (terminalSocket) {
+      if (terminalSocket.readyState === WebSocket.OPEN) {
+        attachSocket();
+      } else {
+        terminalSocket.onopen = attachSocket;
+      }
+    }
     return () => {
       term.dispose();
-      socket.current.disconnect();
+      terminalSocket.close?.();
     };
-  }, []);
+  }, [terminalSocket]);
 
   return (
     <div
