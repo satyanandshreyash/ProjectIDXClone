@@ -7,7 +7,7 @@ import chokidar from 'chokidar';
 import apiRouter from './routes/index.js';
 import { PORT } from "./config/serverConfig.js";
 import { handleEditorSocketEvents } from './socketHandlers/editorHandler.js';
-import { handleContainerCreate, listContainerPorts } from './containers/handleContainerCreate.js';
+import { handleContainerCreate } from './containers/handleContainerCreate.js';
 import { WebSocketServer } from 'ws';
 import { handleTerminalCreation } from './containers/handleTerminalCreation.js';
 
@@ -47,11 +47,6 @@ editorNamespace.on('connection', (socket) => {
         });
     }
 
-    socket.on('getPort', () => {
-        console.log("getPort request recieved");
-        listContainerPorts();
-    })
-
     handleEditorSocketEvents(socket, editorNamespace);
 });
 
@@ -76,12 +71,12 @@ server.on("upgrade", (req, tcpsocket, head) => {
 webSocketForTerminal.on("connection", (ws, req, container) => {
     console.log("Terminal connected");
     handleTerminalCreation(container, ws);
-    ws.on("close", () => {
-        container.remove({ force: true }, (err, data) => {
-            if (err) {
-                console.log("Error removing container", err);
-            }
-            console.log("Container removed", data);
-        })
-    })
+    // ws.on("close", () => {
+    //     container.remove({ force: true }, (err, data) => {
+    //         if (err) {
+    //             console.log("Error removing container", err);
+    //         }
+    //         console.log("Container removed", data);
+    //     })
+    // })
 })

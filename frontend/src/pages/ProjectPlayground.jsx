@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import TextEditor from "../components/molecules/TextEditor";
 import TabButton from "../components/atoms/TabButton";
@@ -11,13 +11,18 @@ import Modal from "react-modal";
 import { useActiveFileTabStore } from "../store/activeFileTabStore";
 import BrowserTerminal from "../components/molecules/BrowserTerminal";
 import { useTerminalSocketStore } from "../store/terminalSocketStore";
+import { usePortStore } from "../store/portStore";
+import Browser from "../components/organisms/Browser/Browser";
 
 const ProjectPlayground = () => {
   const { projectId } = useParams();
   const { setProjectId } = useTreeStructureStore();
   const { editorSocket, setEditorSocket } = useEditorSocketStore();
-  const { setTerminalSocket } = useTerminalSocketStore();
+  const { isTerminalReady, setTerminalSocket } = useTerminalSocketStore();
   const { activeFileTab } = useActiveFileTabStore();
+  const { port } = usePortStore();
+
+  const [showBrowser, setShowBrowser] = useState(false);
 
   const {
     isModalOpen,
@@ -63,13 +68,25 @@ const ProjectPlayground = () => {
   };
 
   const fetchPorts = () => {
-    editorSocket.emit("getPort");
+    editorSocket.emit("getPort", { containerName: projectId });
   };
+
+  useEffect(() => {
+    if (isTerminalReady && editorSocket && projectId) {
+      editorSocket.emit("getPort", { containerName: projectId });
+    }
+  }, [isTerminalReady, editorSocket, projectId]);
 
   return (
     <div className="bg-[#181818] text-gray-300 min-h-screen w-screen">
       <h1>Project Playground</h1>
       <p>Project ID: {projectId}</p>
+      <p>
+        <a
+          className="text-blue-400"
+          href={`http://localhost:${port}`}
+        >{`http://localhost:${port}`}</a>
+      </p>
       <Modal
         isOpen={isModalOpen}
         onAfterOpen={() => {
@@ -102,13 +119,21 @@ const ProjectPlayground = () => {
       <div>
         <button
           onClick={() => {
-            fetchPorts();
+            // fetchPorts();
+            setShowBrowser(!showBrowser);
           }}
+          className="bg-[hsl(0,0%,25%)] p-2 text-lg rounded-lg cursor-pointer"
         >
-          Get Ports
+          {showBrowser ? "Hide Browser" : "Show Browser"}
         </button>
       </div>
+      {!isTerminalReady && (
+        <p className="text-yellow-400 text-sm italic mt-1">
+          Waiting for terminal to connect...
+        </p>
+      )}
       <BrowserTerminal />
+      {showBrowser && <Browser />}
     </div>
   );
 };

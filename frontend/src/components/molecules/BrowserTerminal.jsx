@@ -4,10 +4,12 @@ import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
 import { AttachAddon } from "@xterm/addon-attach";
 import { useTerminalSocketStore } from "../../store/terminalSocketStore";
+import { useEditorSocketStore } from "../../store/editorSocketStore";
+import { useParams } from "react-router-dom";
 
 const BrowserTerminal = () => {
   const terminalRef = useRef(null);
-  const { terminalSocket } = useTerminalSocketStore();
+  const { terminalSocket, setIsTerminalReady } = useTerminalSocketStore();
 
   useEffect(() => {
     if (!terminalSocket) return;
@@ -36,6 +38,13 @@ const BrowserTerminal = () => {
     const attachSocket = () => {
       const attachAddon = new AttachAddon(terminalSocket);
       term.loadAddon(attachAddon);
+      terminalSocket.addEventListener(
+        "message",
+        function handleFirstMessage(event) {
+          terminalSocket.removeEventListener("message", handleFirstMessage);
+          setIsTerminalReady(true);
+        }
+      );
     };
 
     if (terminalSocket) {
