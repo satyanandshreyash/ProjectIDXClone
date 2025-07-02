@@ -18,7 +18,7 @@ const Browser = () => {
   }
 
   return (
-    <div className="h-[100vh] w-full">
+    <div className="h-[100vh] w-full ">
       <div className="flex gap-4 items-center px-4 py-2 bg-[hsl(0,0%,25%)]">
         <GrRefresh
           size={20}

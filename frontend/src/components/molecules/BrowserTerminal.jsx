@@ -35,6 +35,12 @@ const BrowserTerminal = () => {
     term.loadAddon(fitAddon);
     fitAddon.fit();
 
+    // ResizeObserver to handle terminal resizing
+    const resizeObserver = new ResizeObserver(() => {
+      fitAddon.fit();
+    });
+    resizeObserver.observe(terminalRef.current);
+
     const attachSocket = () => {
       const attachAddon = new AttachAddon(terminalSocket);
       term.loadAddon(attachAddon);
@@ -62,7 +68,7 @@ const BrowserTerminal = () => {
 
   return (
     <div
-      className="p-4 border-t border-gray-600 overflow-auto terminal"
+      className="p-4 border-t border-gray-600 overflow-auto terminal w-full"
       ref={terminalRef}
       id="terminal-container"
     ></div>

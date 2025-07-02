@@ -8,6 +8,8 @@ import { useEditorSocketStore } from "../store/editorSocketStore";
 import { io } from "socket.io-client";
 import { useModalStore } from "../store/modalStore";
 import Modal from "react-modal";
+import { Allotment } from "allotment";
+import "allotment/dist/style.css";
 import { useActiveFileTabStore } from "../store/activeFileTabStore";
 import BrowserTerminal from "../components/molecules/BrowserTerminal";
 import { useTerminalSocketStore } from "../store/terminalSocketStore";
@@ -79,14 +81,18 @@ const ProjectPlayground = () => {
 
   return (
     <div className="bg-[#181818] text-gray-300 min-h-screen w-screen">
-      <h1>Project Playground</h1>
-      <p>Project ID: {projectId}</p>
-      <p>
-        <a
-          className="text-blue-400"
-          href={`http://localhost:${port}`}
-        >{`http://localhost:${port}`}</a>
-      </p>
+      <div className="flex justify-between px-4 items-center py-2">
+        <h1>Project Playground : {projectId}</h1>
+        <button
+          onClick={() => {
+            // fetchPorts();
+            setShowBrowser(!showBrowser);
+          }}
+          className="bg-[hsl(0,0%,25%)] p-2 text-lg rounded-lg cursor-pointer"
+        >
+          {showBrowser ? "Hide Browser" : "Show Browser"}
+        </button>
+      </div>
       <Modal
         isOpen={isModalOpen}
         onAfterOpen={() => {
@@ -109,31 +115,32 @@ const ProjectPlayground = () => {
           </form>
         </div>
       </Modal>
-      <div className="flex h-full">
-        <TreeStructure />
-        <div className="flex-1">
-          <TabButton />
-          {activeFileTab && <TextEditor />}
-        </div>
+      <div className="h-[90vh] w-full ">
+        <Allotment>
+          <Allotment.Pane maxSize={366} snap>
+            <TreeStructure />
+          </Allotment.Pane>
+          <Allotment vertical>
+            <Allotment.Pane>
+              <div className="w-full h-full">
+                <TabButton />
+                {activeFileTab && <TextEditor />}
+              </div>
+            </Allotment.Pane>
+            <Allotment.Pane snap>
+              <div className="w-full h-full">
+                {!isTerminalReady && (
+                  <p className="text-yellow-400 text-sm italic mt-1">
+                    Waiting for terminal to connect...
+                  </p>
+                )}
+                <BrowserTerminal />
+              </div>
+            </Allotment.Pane>
+          </Allotment>
+          {showBrowser && <Browser />}
+        </Allotment>
       </div>
-      <div>
-        <button
-          onClick={() => {
-            // fetchPorts();
-            setShowBrowser(!showBrowser);
-          }}
-          className="bg-[hsl(0,0%,25%)] p-2 text-lg rounded-lg cursor-pointer"
-        >
-          {showBrowser ? "Hide Browser" : "Show Browser"}
-        </button>
-      </div>
-      {!isTerminalReady && (
-        <p className="text-yellow-400 text-sm italic mt-1">
-          Waiting for terminal to connect...
-        </p>
-      )}
-      <BrowserTerminal />
-      {showBrowser && <Browser />}
     </div>
   );
 };
