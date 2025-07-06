@@ -1,6 +1,7 @@
 # ReactBox – A VS Code-like IDE for React Projects in the Browser 
 > A lightweight in-browser IDE tailored for React — build, code, run, and preview your React apps instantly.
 
+![ReactBox Preview](./frontend/src/assets/ReactBoxPreview.png)
 ---
 
 ## Description
