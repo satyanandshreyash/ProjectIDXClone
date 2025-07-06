@@ -18,11 +18,13 @@ const CreateProject = () => {
   };
 
   return (
-    <div>
-      <h1>Create Project</h1>
-      <Button onClick={handleCreateProject} type="primary">
+    <div className="h-screen flex items-center justify-center bg-[hsl(0,0%,5%)] text-white">
+      <button
+        onClick={handleCreateProject}
+        className="bg-[hsl(0,0%,10%)] p-4 rounded-lg border-[hsl(0,0%,20%)] border hover:bg-[hsl(0,0%,15%)] transition-colors duration-300 text-[hsl(0,0%,90%)] font-semibold cursor-pointer"
+      >
         Create Project
-      </Button>
+      </button>
       {isPending && <p>Creating project...</p>}
       {isSuccess && <p>Project created successfully!</p>}
       {error && <p>Error creating project: {error.message}</p>}

@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+/* Hide scrollbar but allow scrolling */
+.xterm .xterm-viewport {
+  scrollbar-width: none; /* Firefox */
+  overflow-y: scroll !important; /* Allow scrolling */
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar {
+  width: 0px; /* Chrome, Safari, Opera */
+  background: transparent;
+}

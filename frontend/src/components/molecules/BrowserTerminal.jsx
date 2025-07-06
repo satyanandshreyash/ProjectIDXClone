@@ -44,6 +44,11 @@ const BrowserTerminal = () => {
     const attachSocket = () => {
       const attachAddon = new AttachAddon(terminalSocket);
       term.loadAddon(attachAddon);
+
+      // term.onLineFeed(() => {
+      //   term.scrollToBottom();
+      // });
+
       terminalSocket.addEventListener(
         "message",
         function handleFirstMessage(event) {
@@ -68,7 +73,7 @@ const BrowserTerminal = () => {
 
   return (
     <div
-      className="p-4 border-t border-gray-600 overflow-auto terminal w-full"
+      className="px-4 py-1 border-t border-[hsl(0,0%,30%)] terminal w-full h-full"
       ref={terminalRef}
       id="terminal-container"
     ></div>

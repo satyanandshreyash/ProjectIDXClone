@@ -48,7 +48,7 @@ const TreeNode = ({ fileFolderData }) => {
       <div className="ml-3 border-gray-400">
         {fileFolderData.children ? (
           <button
-            className="flex items-center gap-1 cursor-pointer outline-none hover:bg-gray-600 px-2 w-full"
+            className="text-[hsl(0,0%,90%)] flex items-center gap-1 cursor-pointer outline-none hover:bg-[hsl(0,0%,20%)] px-2 w-full"
             onClick={() => toggleVisibility(fileFolderData.name)}
             onContextMenu={(e) =>
               handleContextMenuForFolder(e, fileFolderData.path)
@@ -69,7 +69,7 @@ const TreeNode = ({ fileFolderData }) => {
           </button>
         ) : (
           <button
-            className="ml-5 flex items-center gap-2 cursor-pointer outline-none hover:bg-gray-600 px-2 w-full"
+            className="text-[hsl(0,0%,90%)] ml-5 flex items-center gap-2 cursor-pointer outline-none hover:bg-[hsl(0,0%,20%)] px-2 w-full"
             onContextMenu={(e) =>
               handleContextMenuForFile(e, fileFolderData.path)
             }

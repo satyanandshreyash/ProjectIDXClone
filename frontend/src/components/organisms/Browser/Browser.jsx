@@ -29,7 +29,7 @@ const Browser = () => {
           type="text"
           defaultValue={`http://localhost:${port}`}
           readOnly
-          className=" p-2 outline-none w-[80%] bg-[hsl(0,0%,10%)] rounded-md"
+          className="text-[hsl(0,0%,90%)] font-semibold p-2 outline-none w-[80%] bg-[hsl(0,0%,10%)] rounded-md"
         ></input>
       </div>
 

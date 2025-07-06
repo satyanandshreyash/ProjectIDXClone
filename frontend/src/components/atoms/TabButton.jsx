@@ -10,7 +10,7 @@ const TabButton = ({ isActive = true }) => {
     <>
       {activeFileTab && (
         <button
-          className={`bg-[#24292e] text-gray-300 px-6 py-2 border-r-1 border-r-gray-500 border-b-1 border-b-gray-500 ${
+          className={`bg-[hsl(0,0%,20%)] font-semibold text-[hsl(0,0%,90%)] px-6 py-2 border-r-1 border-r-gray-500 border-b-1 border-b-gray-500 ${
             isActive ? "border-t-4 border-blue-600" : ""
           }`}
           onClick={handleClick}

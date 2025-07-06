@@ -82,13 +82,15 @@ const ProjectPlayground = () => {
   return (
     <div className="bg-[#181818] text-gray-300 min-h-screen w-screen">
       <div className="flex justify-between px-4 items-center py-2">
-        <h1>Project Playground : {projectId}</h1>
+        <h1 className="text-[hsl(0,0%,90%)] text-lg font-semibold">
+          Project Playground : {projectId}
+        </h1>
         <button
           onClick={() => {
             // fetchPorts();
             setShowBrowser(!showBrowser);
           }}
-          className="bg-[hsl(0,0%,25%)] p-2 text-lg rounded-lg cursor-pointer"
+          className="bg-[hsl(0,0%,10%)] p-4 rounded-lg border-[hsl(0,0%,20%)] border hover:bg-[hsl(0,0%,15%)] transition-colors duration-300 text-[hsl(0,0%,90%)] font-semibold cursor-pointer"
         >
           {showBrowser ? "Hide Browser" : "Show Browser"}
         </button>
@@ -115,7 +117,7 @@ const ProjectPlayground = () => {
           </form>
         </div>
       </Modal>
-      <div className="h-[90vh] w-full ">
+      <div className="h-[90vh] w-full border-t border-b border-r border-[hsl(0,0%,30%)]">
         <Allotment>
           <Allotment.Pane maxSize={366} snap>
             <TreeStructure />
